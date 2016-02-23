@@ -1,0 +1,21 @@
+{
+    "main": "bin/caphpe",
+    "output": "caphpe.phar",
+    "git-version": "package_version",
+    "stub": true,
+    "directories": [
+        "src"
+    ],
+    "files": [
+        "LICENSE.md",
+        "README.md"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "in": "vendor",
+            "exclude": ["tests", "Tests"]
+        }
+    ],
+    "chmod": "0755"
+}

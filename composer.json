@@ -1,0 +1,23 @@
+{
+    "name": "rask/caphpe",
+    "description": "A volatile in-memory key-value storage written in PHP",
+    "authors": [
+        {
+            "name": "Otto Rask",
+            "email": "ojrask@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Caphpe\\": "src/",
+            "Caphpe\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "ext-sockets": "*",
+        "react/react": "^0.4.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.2"
+    }
+}

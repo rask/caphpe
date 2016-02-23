@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+// Autoload.
+require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+
+// CLI arguments.
+$args = new Caphpe\Cli\Arguments($argv);
+
+// Cache storage application.
+$application = new Caphpe\Application($args);
+
+// Event loop.
+$loop = React\EventLoop\Factory::create();
+
+$loop->addPeriodicTimer(5, [$application, 'tickEvent']);
+
+// Socket interface server.
+$socket = new React\Socket\Server($loop);
+
+$socket->on('connection', function (\React\Socket\ConnectionInterface $conn) use ($application) {
+    $dataBuffer = [];
+
+    $conn->on('data', function ($data) use ($conn, $application, &$dataBuffer) {
+        $dataBuffer[] = $data;
+
+        if (stripos($data, "\n") === false) {
+            return;
+        }
+
+        $useData = trim(preg_replace("%^(.+)\n.*%", '$1', implode('', $dataBuffer)));
+
+        // Close command.
+        if (preg_match('%^close\s*$%imu', $useData)) {
+            $conn->end('Closing connection' . "\n");
+            return;
+        }
+
+        $response = $application->handleRequest($useData);
+        $conn->write($response . "\n");
+        $dataBuffer = [];
+    });
+});
+
+$socket->listen(
+    $application->configuration->getOption('port'),
+    $application->configuration->getOption('host')
+);
+
+$loop->run();
