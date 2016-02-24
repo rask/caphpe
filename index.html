@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Caphpe</title>
+
+        <link rel="stylesheet" href="style.css" type="text/css">
+
+        <script type=text/javascript>
+            if (
+                window.location.protocol !== 'https' &&
+                window.location.hostname.indexOf('localhost') === -1
+            ) {
+                window.location = 'https://' + window.location.host;
+            }
+        </script>
+
+    </head>
+
+    <body>
+
+        <h1 id="caphpe">Caphpe</h1>
+        <p>A volatile in-memory key-value storage written in PHP.</p>
+
+        <div class="toc">
+            <ol>
+                <li><a href="#about">About</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#running-caphpe">Running Caphpe</a></li>
+                <li><a href="#connecting">Connecting</a></li>
+                <li><a href="#types-and-data">Types and data</a></li>
+                <li><a href="#managing-data">Managing data (commands)</a></li>
+            </ol>
+        </div>
+
+        <h2 id="about">About</h2>
+
+        <p>
+            Caphpe originally started as an experiment on creating a Memcached
+            <q>clone</q> of sorts in pure PHP.
+        </p>
+
+        <p>
+            Caphpe has various commands to store, alter, fetch and delete values.
+            It does not persist the cached values anywhere. If you kill the process
+            the data is gone for good.
+        </p>
+
+        <p>
+            Read more about Caphpe or browse the code over at the
+            <a href="https://github.com/rask/caphpe">GitHub repository</a>.
+        </p>
+
+        <h2 id="installation">Installation</h2>
+
+        <h3>Requirements</h3>
+        <p>
+            Caphpe should work anywhere where a relatively new (5.5+) PHP CLI
+            installation is available and where socket creation is allowed.
+        </p>
+
+        <p>
+            Caphpe has been tested on Linux and Windows.
+        </p>
+
+        <h3>Download</h3>
+        <p>
+            <a href="caphpe.phar">Download the Phar</a> and move it somewhere
+            convenient for now (maybe your <code>$PATH</code>).
+        </p>
+
+        <h2 id="running-caphpe">Running Caphpe</h2>
+
+        <p>
+            Make sure the downloaded Phar is executable using
+        </p>
+
+        <pre><code>
+$ chmod +x caphpe.phar
+        </code></pre>
+
+        <p>
+            You can make it easier to invoke by using
+        </p>
+
+        <pre><code>
+$ mv caphpe.phar caphpe
+        </code></pre>
+
+        <p>
+            Then you can run Caphpe as such
+        </p>
+
+        <pre><code>
+$ caphpe
+        </code></pre>
+
+        <h3>Options</h3>
+
+        <p>
+            Cache offers a few options to alter how it runs:
+        </p>
+
+        <pre><code>
+--host=[host]|-h [host]
+    Define a hostname to listen on. Defaults to 127.0.0.1.
+
+--port=[port]|-p [port]
+    Define the port to listen on. Defaults to 10808.
+
+--memorylimit=[limit]|-m [limit]
+    Define a memory limit (in megabytes) for Caphpe to use. Defaults to 64MB.
+
+--verbosity=[verbosity]|-v [verbosity]
+    Define output verbosity. 1, 2 or 3. Higher means more messages. Defaults to 1.
+        </code></pre>
+
+        <p>
+            Example:
+        </p>
+
+        <pre><code>
+$ caphpe \
+    --host=192.168.0.123 \
+    --port=12345 \
+    --memorylimit=128 \
+    --verbosity=3
+        </code></pre>
+
+        <h2 id="connecting">Connecting to Caphpe</h2>
+
+        <p>
+            Caphpe listens on the host and port as defined by the given options
+            <code>host</code> and <code>port</code>.
+        </p>
+
+        <p>
+            You can test the connection by using telnet:
+        </p>
+
+        <pre><code>
+$ telnet 127.0.0.1 10808
+&gt; flush
+1
+&gt; close
+$ ...
+        </code></pre>
+
+        <p>
+            If you wish to connect from an application you need to connect to the
+            Caphpe TCP socket using your language's features.
+        </p>
+
+        <h2 id="types-and-data">Types and data in Caphpe</h2>
+
+        <p>
+            Internally Caphpe data types and data storing itself is quite simple.
+        </p>
+
+        <h3>Keys</h3>
+
+        <p>
+            All values in Caphpe are tied to a single key. Keys must be under 64
+            characters long and can contain only the following characters:
+        </p>
+
+        <ul>
+            <li><code>a-z</code> and <code>A-Z</code></li>
+            <li><code>0-9</code></li>
+            <li><code>.</code> and <code>_</code></li>
+        </ul>
+
+        <h3>Types</h3>
+
+        <p>
+            Internally Caphpe supports the following types: <code>string</code>,
+            <code>integer</code> and <code>boolean</code>. All values are stored as
+            strings unless otherwise instructed (or if PHP does some magic
+            type-casting with no respect to the author).
+        </p>
+
+        <p>
+            When issuing value-altering commands a user can tell Caphpe to cast to
+            different types using the keys <code>s</code>, <code>i</code> and
+            <code>b</code>. More on using those keys later when commands are
+            explained.
+        </p>
+
+        <h3>Values</h3>
+
+        <p>
+            Each value is tied to a single key in Caphpe. Value can be one of the
+            types mentioned above.
+        </p>
+
+        <p>
+            Values currently have two restrictions:
+        </p>
+
+        <ul>
+            <li>They cannot contain newlines (<code>\n</code>)</li>
+            <li>They cannot end into an <code>&lt;space&gt;</code>+integer combination.</li>
+        </ul>
+
+        <p>
+            Caphpe delimits commands using newlines (<code>\n</code>), so if there is
+            one inside a value the commands breaks. Caphpe sets timeouts as the final
+            command parameter so values ending in integers may not work properly.
+        </p>
+
+        <p>
+            The following values would be OK
+        </p>
+
+        <pre><code>
+this is an awesome value
+this value is 100x awesomer
+        </code></pre>
+
+        <p>
+            The following values may/will break
+        </p>
+
+        <pre><code>
+this is some not cool value 12345
+this is a naughty\nvalue which has a newline
+        </code></pre>
+
+        <p>
+            Plans are in place to lift these restrictions, maybe by enforcing some
+            delimiters around values for library/wrapper implementations.
+        </p>
+
+        <h3>Timeouts</h3>
+
+        <p>
+            Each value in Caphpe has a timeout. A timeout internally is an absolute
+            Unix timestamp which marks the time when a value is considered stale (and
+            will be removed automatically from Caphpe).
+        </p>
+
+        <p>
+            When giving timeout values, users must provide the timeout value as
+            <em>seconds from now</em>. In other words how many seconds a value is
+            considered "fresh".
+        </p>
+
+        <p>
+            If no timeout value is given (or <code>0</code> is given) then Caphpe
+            treats the value as "fresh forever" unless otherwise removed.
+        </p>
+
+        <h2 id="managing-data">Managing data in Caphpe</h2>
+
+        <p>
+            You can add, alter, fetch and delete data in Caphpe using the following
+            commands.
+        </p>
+
+        <div class="info">
+            <strong>Legend</strong>:<br>
+            <code>[]</code> denotes a parameter for a command,<br>
+            <code>[]?</code> denotes an optional parameter.
+        </div>
+
+        <h3>add</h3>
+
+        <pre><code>
+<strong>add [key] [type]?[value] [timeout]?</strong>
+    where
+        [key] is a valid key
+        [type] is one of
+            s|
+            i|
+            b|
+        [value] is a valid value
+        [timeout] is an integer marking seconds
+        </code></pre>
+
+        <p>
+            Add a value to Caphpe. If the key already exists this command does
+            nothing. Examples:
+        </p>
+
+        <pre><code>
+add mykey myvalue 3600
+add mykey s|some string value
+add mykey i|123456 3600
+add mykey b|1 0
+        </code></pre>
+
+        <h3>set</h3>
+
+        <pre><code>
+<strong>set [key] [type]?[value] [timeout]?</strong>
+    see add command for reference
+        </code></pre>
+
+        <p>
+            Sets a value to Caphpe. Will create and override keys where needed.
+            Examples:
+        </p>
+
+        <pre><code>
+set mykey myvalue 3600
+set mykey s|awesome string with awesome value
+        </code></pre>
+
+        <h3>replace</h3>
+
+        <pre><code>
+<strong>replace [key] [type]?[value] [timeout]?</strong>
+    see add command for reference
+        </code></pre>
+
+        <p>
+            Replaces a value in Caphpe. If the key does not exist this command does
+            nothing. Examples:
+        </p>
+
+        <pre><code>
+replace mykey myvalue 3600
+replace mykey s|awesome string with awesome value
+        </code></pre>
+
+        <h3>delete</h3>
+
+        <h3>increment</h3>
+
+        <h3>decrement</h3>
+
+        <h3>has</h3>
+
+        <h3>get</h3>
+
+        <h3>flush</h3>
+
+    </body>
+
+</html>

@@ -1,0 +1,138 @@
+/**
+ * Caphpe gh-pages stylesheet.
+ *
+ * @author Otto J. Rask
+ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    line-height: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    padding: 5rem 2rem;
+    max-width: 96rem;
+    margin: 0 auto;
+    font-size: 1.6em;
+    line-height: 1.4;
+    font-family: Times New Roman, Times, FreeSerif, serif;
+    color: black;
+    background-color: white;
+}
+
+body > * + * {
+    margin-top: 1.5em;
+}
+
+/**==================================================================================
+ * TYPE
+ *=================================================================================*/
+
+h1, h2, h3, h4, h5 {
+    font-family: Helvetica, Arial, FreeSans, sans-serif;
+}
+
+h1 {
+    font-size: 4.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    text-shadow: 0.05em 0.05em 0 #c90;
+}
+
+h2 {
+    font-size: 3.6rem;
+}
+
+h3 {
+    font-size: 2.8rem;
+}
+
+h4 {
+    font-size: 2rem;
+}
+
+h5 {
+    font-size: 1.6rem;
+}
+
+h1 + p {
+    font-size: 110%;
+    font-family: Helvetica, Arial, FreeSans, sans-serif;
+}
+
+ul, ol {
+    margin-left: 1.5em;
+}
+
+pre, code {
+    font-family: Courier New, Courier, monospace;
+    font-size: 90%;
+}
+
+pre {
+    overflow-x: auto;
+    padding: 0 1.5rem;
+    border-left: 0.1rem dashed #ccc;
+    background-color: #eee;
+}
+
+p code, li code {
+    background-color: #eee;
+    padding: 0 0.333rem;
+}
+
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight: bold;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#0000ff+0,0000ff+100&0+0,0+98,1+100 */
+    background: -moz-linear-gradient(top,  rgba(0,0,255,0) 0%, rgba(0,0,255,0) 94%, rgba(0,0,255,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(0,0,255,0) 0%,rgba(0,0,255,0) 94%,rgba(0,0,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(0,0,255,0) 0%,rgba(0,0,255,0) 94%,rgba(0,0,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000ff', endColorstr='#0000ff',GradientType=0 ); /* IE6-9 */
+    text-shadow:
+        0 0.1rem 0 white,
+        0 -0.1rem 0 white,
+        0.1rem 0 0 white,
+        -0.1rem 0 0 white,
+        -0.1rem 0.1rem 0 white,
+        0.1rem 0.1rem 0 white;
+}
+
+@media screen and (min-width: 720px) {
+    .toc {
+        width: 33%;
+        float: right;
+        padding: 1.9rem;
+        margin: 5rem 0 4rem 4rem;
+        border: 0.1rem solid #eee;
+    }
+
+    .toc li {
+        margin: 0.25rem 0;
+    }
+
+    pre {
+        padding: 0 2rem;
+    }
+}
