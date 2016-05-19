@@ -22,7 +22,7 @@ html {
 }
 
 body {
-    padding: 5rem 2rem;
+    padding: 3rem 2rem;
     max-width: 96rem;
     margin: 0 auto;
     font-size: 1.6em;
@@ -32,8 +32,15 @@ body {
     background-color: white;
 }
 
-body > * + * {
+body > * + *,
+body > div > * + * {
     margin-top: 1.5em;
+}
+
+@media screen and (min-width: 560px) {
+    body {
+        padding: 5rem 3rem;
+    }
 }
 
 /**==================================================================================
@@ -120,6 +127,65 @@ a {
 }
 
 @media screen and (min-width: 720px) {
+    pre {
+        padding: 0 2rem;
+    }
+
+    h2 ~ h2 ~ p,
+    h2 ~ h2 ~ ul,
+    h2 ~ h2 ~ ol,
+    h2 ~ h2 ~ h4,
+    h2 ~ h2 ~ div {
+        padding-left: 25%;
+    }
+
+    h2 ~ h2 ~ pre {
+        margin-left: 25%;
+    }
+}
+
+/**==================================================================================
+ * TOC
+ *=================================================================================*/
+
+.toc {
+    counter-reset: toc-main;
+}
+
+.toc ol {
+    margin: 0;
+}
+
+.toc ol ol {
+    margin-left: 1.1em;
+}
+
+.toc li {
+    list-style-type: none;
+}
+
+.toc li ol {
+    counter-reset: toc-sub;
+}
+
+.toc li::before {
+    margin-right: 1rem;
+    font-family: Helvetica, Arial, FreeSans, sans-serif;
+    font-size: 90%;
+    color: #666;
+}
+
+.toc > ol > li::before {
+    content: counter(toc-main);
+    counter-increment: toc-main;
+}
+
+.toc > ol > li li::before {
+    content: counter(toc-main)'.'counter(toc-sub);
+    counter-increment: toc-sub;
+}
+
+@media screen and (min-width: 720px) {
     .toc {
         width: 33%;
         float: right;
@@ -131,8 +197,99 @@ a {
     .toc li {
         margin: 0.25rem 0;
     }
+}
 
-    pre {
-        padding: 0 2rem;
+/**==================================================================================
+ * CONTENT NUMBERING
+ *=================================================================================*/
+
+html {
+    counter-reset: head-count-main;
+}
+
+body {
+    counter-reset: head-count-sub;
+}
+
+h2::before, h3::before {
+    color: #808080;
+    display: inline-block;
+    width: 5rem;
+    margin-right: 1rem;
+}
+
+h2::before {
+    content: counter(head-count-main)'.';
+    counter-increment: head-count-main;
+}
+
+h2 {
+    counter-reset: head-count-sub;
+}
+
+h3::before {
+    content: counter(head-count-main)'.'counter(head-count-sub)'.';
+    counter-increment: head-count-sub;
+}
+
+/**==================================================================================
+ * NOTICES
+ *=================================================================================*/
+
+.warning {
+    color: rgb(64, 58, 54);
+    padding: 1.5rem;
+    border: 0.1rem solid rgb(217, 206, 169);
+    background-color: rgb(247, 238, 205);
+}
+
+.warning a {
+    color: rgb(87, 75, 66);
+    text-decoration: none;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#0000ff+0,0000ff+100&0+0,0+98,1+100 */
+    background: -moz-linear-gradient(top,  rgba(87, 75, 66,0) 0%, rgba(87, 75, 66,0) 94%, rgba(87, 75, 66,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(87, 75, 66,0) 0%,rgba(87, 75, 66,0) 94%,rgba(87, 75, 66,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(87, 75, 66,0) 0%,rgba(87, 75, 66,0) 94%,rgba(87, 75, 66,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000ff', endColorstr='#0000ff',GradientType=0 ); /* IE6-9 */
+    text-shadow:
+            0 0.1rem 0 rgb(247, 238, 205),
+            0 -0.1rem 0 rgb(247, 238, 205),
+            0.1rem 0 0 rgb(247, 238, 205),
+            -0.1rem 0 0 rgb(247, 238, 205),
+            -0.1rem 0.1rem 0 rgb(247, 238, 205),
+            0.1rem 0.1rem 0 rgb(247, 238, 205);
+}
+
+@media screen and (min-width: 720px) {
+    h2:first-of-type + .warning {
+        width: calc(66.666% - 4rem);
+    }
+}
+
+/**==================================================================================
+ * FOOTER
+ *=================================================================================*/
+
+.footer {
+    border-top: 0.1rem solid #ddd;
+    color: #808080;
+    font-family: Helvetica, Arial, FreeSans, sans-serif;
+    padding: 5rem 0;
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 3rem;
+    text-align: center;
+}
+
+.footer p {
+    margin-top: 0;
+}
+
+@media screen and (min-width: 720px) {
+    .footer {
+        flex-direction: row;
     }
 }

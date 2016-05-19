@@ -30,15 +30,52 @@
         <div class="toc">
             <ol>
                 <li><a href="#about">About</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#running-caphpe">Running Caphpe</a></li>
+                <li><a href="#installation">Installation</a>
+                    <ol>
+                        <li><a href="#installation/requirements">Requirements</a></li>
+                        <li><a href="#installation/download">Download</a></li>
+                    </ol>
+                </li>
+                <li><a href="#running-caphpe">Running Caphpe</a>
+                    <ol>
+                        <li><a href="#running-caphpe/options">Options</a></li>
+                    </ol>
+                </li>
                 <li><a href="#connecting">Connecting</a></li>
-                <li><a href="#types-and-data">Types and data</a></li>
-                <li><a href="#managing-data">Managing data (commands)</a></li>
+                <li><a href="#types-and-data">Types and data</a>
+                    <ol>
+                        <li><a href="#types-and-data/keys">Keys</a></li>
+                        <li><a href="#types-and-data/types">Types</a></li>
+                        <li><a href="#types-and-data/values">Values</a></li>
+                        <li><a href="#types-and-data/timeouts">Timeouts</a></li>
+                    </ol>
+                </li>
+                <li><a href="#managing-data">Managing data</a>
+                    <ol>
+                        <li><a href="#managing-data/commands">Commands</a></li>
+                    </ol>
+                </li>
+                <li><a href="#issues-errors-bugs">Issues, errors and bugs</a>
+                    <ol>
+                        <li><a href="#issues-errors-bugs/known-issues">Known issues</a></li>
+                    </ol>
+                </li>
             </ol>
         </div>
 
         <h2 id="about">About</h2>
+
+        <div class="warning">
+            <p>
+                Caphpe is currently in development. No stable release is available
+                yet. This documentation refers to the latest available release.
+            </p>
+            <p>
+                You can follow development and contribute at the
+                <a href="https://github.com/rask/caphpe">GitHub source
+                repository</a>.
+            </p>
+        </div>
 
         <p>
             Caphpe originally started as an experiment on creating a Memcached
@@ -52,13 +89,22 @@
         </p>
 
         <p>
+            Caphpe is not meant to be used as a direct replacement of something like
+            Redis or Memcached. They play in an entirely other league when it comes
+            to caching software. Caphpe is good for light use small object storage.
+            PHP ain't as performant as C either, so it can be slower than Memcached
+            and the like. Preliminary benchmarks clocked around 10000 writes per
+            second through a persistent socket connection.
+        </p>
+
+        <p>
             Read more about Caphpe or browse the code over at the
             <a href="https://github.com/rask/caphpe">GitHub repository</a>.
         </p>
 
         <h2 id="installation">Installation</h2>
 
-        <h3>Requirements</h3>
+        <h3 id="installation/requirements">Requirements</h3>
         <p>
             Caphpe should work anywhere where a relatively new (5.5+) PHP CLI
             installation is available and where socket creation is allowed.
@@ -68,7 +114,7 @@
             Caphpe has been tested on Linux and Windows.
         </p>
 
-        <h3>Download</h3>
+        <h3 id="installation/download">Download</h3>
         <p>
             <a href="caphpe.phar">Download the Phar</a> and move it somewhere
             convenient for now (maybe your <code>$PATH</code>).
@@ -100,7 +146,7 @@ $ mv caphpe.phar caphpe
 $ caphpe
         </code></pre>
 
-        <h3>Options</h3>
+        <h3 id="running-caphpe/options">Options</h3>
 
         <p>
             Cache offers a few options to alter how it runs:
@@ -162,7 +208,7 @@ $ ...
             Internally Caphpe data types and data storing itself is quite simple.
         </p>
 
-        <h3>Keys</h3>
+        <h3 id="types-and-data/keys">Keys</h3>
 
         <p>
             All values in Caphpe are tied to a single key. Keys must be under 64
@@ -175,7 +221,7 @@ $ ...
             <li><code>.</code> and <code>_</code></li>
         </ul>
 
-        <h3>Types</h3>
+        <h3 id="types-and-data/types">Types</h3>
 
         <p>
             Internally Caphpe supports the following types: <code>string</code>,
@@ -191,7 +237,7 @@ $ ...
             explained.
         </p>
 
-        <h3>Values</h3>
+        <h3 id="types-and-data/values">Values</h3>
 
         <p>
             Each value is tied to a single key in Caphpe. Value can be one of the
@@ -236,7 +282,7 @@ this is a naughty\nvalue which has a newline
             delimiters around values for library/wrapper implementations.
         </p>
 
-        <h3>Timeouts</h3>
+        <h3 id="types-and-data/timeouts">Timeouts</h3>
 
         <p>
             Each value in Caphpe has a timeout. A timeout internally is an absolute
@@ -262,13 +308,15 @@ this is a naughty\nvalue which has a newline
             commands.
         </p>
 
+        <h3 id="managing-data/commands">Commands</h3>
+
         <div class="info">
             <strong>Legend</strong>:<br>
             <code>[]</code> denotes a parameter for a command,<br>
             <code>[]?</code> denotes an optional parameter.
         </div>
 
-        <h3>add</h3>
+        <h4>add</h4>
 
         <pre><code>
 <strong>add [key] [type]?[value] [timeout]?</strong>
@@ -294,7 +342,7 @@ add mykey i|123456 3600
 add mykey b|1 0
         </code></pre>
 
-        <h3>set</h3>
+        <h4>set</h4>
 
         <pre><code>
 <strong>set [key] [type]?[value] [timeout]?</strong>
@@ -311,7 +359,7 @@ set mykey myvalue 3600
 set mykey s|awesome string with awesome value
         </code></pre>
 
-        <h3>replace</h3>
+        <h4>replace</h4>
 
         <pre><code>
 <strong>replace [key] [type]?[value] [timeout]?</strong>
@@ -328,17 +376,127 @@ replace mykey myvalue 3600
 replace mykey s|awesome string with awesome value
         </code></pre>
 
-        <h3>delete</h3>
+        <h4>delete</h4>
 
-        <h3>increment</h3>
+        <pre><code>
+<strong>delete [key]</strong>
+    where
+        [key] is a valid key
+        </code></pre>
 
-        <h3>decrement</h3>
+        <p>
+            Deletes a value from Caphpe. Does nothing if the key does not exist.
+            Examples:
+        </p>
 
-        <h3>has</h3>
+        <pre><code>
+delete mykey
+        </code></pre>
 
-        <h3>get</h3>
+        <h4>increment</h4>
 
-        <h3>flush</h3>
+        <pre><code>
+<strong>increment [key] [timeout]?</strong>
+    where
+        [key] is a valid key
+        [timeout] is an integer marking seconds
+        </code></pre>
+
+        <p>
+            Increment a numeric value in Caphpe by <strong>1</strong>. If the value
+            is not a numeric value or does not exist nothing is done. Examples:
+        </p>
+
+        <pre><code>
+increment mykey 3600
+increment somekey
+        </code></pre>
+
+        <h4>decrement</h4>
+
+        <p>
+            <em>See <code>increment</code>. This one does the opposite.</em>
+        </p>
+
+        <h4>has</h4>
+
+        <pre><code>
+<strong>has [key]</strong>
+    where
+        [key] is a valid key
+        </code></pre>
+
+        <p>
+            Checks if a value exists for the given key. Returns <code>1</code> if does,
+            empty value if not. Examples:
+        </p>
+
+        <pre><code>
+has mykey
+has someotherkey
+        </code></pre>
+
+        <h4>get</h4>
+
+        <pre><code>
+<strong>get [key]</strong>
+    where
+        [key] is a valid key
+        </code></pre>
+
+        <p>
+            Get a value from Caphpe for a key. Returns the value or an empty string
+            if no value exists for the key. Examples:
+        </p>
+
+        <pre><code>
+get mykey
+get somekey
+        </code></pre>
+
+        <h4>flush</h4>
+
+        <pre><code>
+<strong>flush</strong>
+    (no parameters)
+        </code></pre>
+
+        <p>
+            Flushes all data from Caphpe. Returns <code>1</code> if successful and an
+            empty string if not. Example:
+        </p>
+
+        <pre><code>
+flush
+        </code></pre>
+
+        <h2 id="issues-errors-bugs">Issues, errors and bugs</h2>
+
+        <p>
+            Currently Caphpe is in an unstable development phase. Bugs come and go
+            and it may sometimes not work at all.
+        </p>
+
+        <p>
+            If you encounter stuff that does not work as documented or does not work
+            at all, please <a href="https://github.com/rask/caphpe">create an issue
+            over at the GitHub issue tracker</a>.
+        </p>
+
+        <h3 id="issues-errors-bugs/known-issues">Known issues and limitations</h3>
+
+        <ul>
+            <li>
+                There is currently no way to get a status report of sorts from Caphpe via the
+                command API, e.g. memory usage, item count, key listing, etc.
+            </li>
+        </ul>
+
+        <div class="footer">
+            <p>Copyright &copy; Caphpe folks and contributors</p>
+            <p><a href="#caphpe">Back to top</a></p>
+            <p><a href="https://github.com/rask/caphpe">Caphpe @ GitHub</a></p>
+        </div>
 
     </body>
 
