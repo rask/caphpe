@@ -11,9 +11,9 @@
 
         <link rel="stylesheet" href="style.css" type="text/css">
 
-        <script type=text/javascript>
+        <script type="text/javascript">
             if (
-                window.location.protocol !== 'https' &&
+                window.location.protocol.indexOf('https') !== 0 &&
                 window.location.hostname.indexOf('localhost') === -1
             ) {
                 window.location = 'https://' + window.location.host + '/caphpe';
