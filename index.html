@@ -470,6 +470,37 @@ get somekey
 flush
         </code></pre>
 
+        <h4>status</h4>
+
+        <pre><code>
+<strong>status</strong>
+    (no parameters)
+        </code></pre>
+
+        <p>
+            Displays a status message. <strong>Note</strong>: Caphpe currently
+            approximates memory usage per cache item, so there may be some error in
+            the values returned by the status command.</p>
+
+        <p>
+            Here is an example output of the status command. Please note the separate
+            header and value lines, with columns separated with a single
+            <code>\t</code> character:
+        </p>
+
+        <pre><code>
+Memory usage (MB)<em>\t</em>Item count<em>\t</em>Smallest item (KB)<em>\t</em>Largest item (KB)<em>\t</em>Average item (KB)
+12.3456<em>\t</em>123<em>\t</em>0.704<em>\t</em>1.567<em>\t</em>0.888
+        </code></pre>
+
+        <p>
+            Example:
+        </p>
+
+        <pre><code>
+status
+        </code></pre>
+
         <h2 id="issues-errors-bugs">Issues, errors and bugs</h2>
 
         <p>

@@ -101,6 +101,11 @@ p code, li code {
     padding: 0 0.333rem;
 }
 
+pre code > em {
+    font-style: normal;
+    opacity: 0.55;
+}
+
 em {
     font-style: italic;
 }
