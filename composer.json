@@ -9,7 +9,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "Caphpe\\": "src/",
+            "Caphpe\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Caphpe\\Tests\\": "tests/"
         }
     },
