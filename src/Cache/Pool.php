@@ -250,7 +250,183 @@ class Pool
     }
 
     /**
+     * Get the status of this cache pool.
+     *
+     * @since 0.1.0
+     * @return string
+     */
+    public function getStatus()
+    {
+        $memoryUsageMBytes = memory_get_usage() / 1024 / 1024;
+        $itemCount = $this->getItemCount();
+        $itemMemorySizesKBytes = $this->getItemSizes();
+
+        $msgHeader = sprintf(
+            "%s\t%s\t%s\t%s\t%s",
+            'Memory usage (MB)',
+            'Item count',
+            'Smallest item (KB)',
+            'Largest item (KB)',
+            'Average item (KB)'
+        );
+
+        $msg = sprintf(
+            "%s\t%s\t%s\t%s\t%s",
+            $memoryUsageMBytes,
+            $itemCount,
+            $itemMemorySizesKBytes['minimum'],
+            $itemMemorySizesKBytes['maximum'],
+            $itemMemorySizesKBytes['average']
+        );
+
+        return $msgHeader . PHP_EOL . $msg;
+    }
+
+    /**
+     * Get the total count of items in the cache.
+     *
+     * @since 0.1.0
+     * @access protected
+     * @return int
+     */
+    protected function getItemCount()
+    {
+        return count($this->items);
+    }
+
+    /**
+     * Get item memory sizes with various types.
+     *
+     * Returns an array containint [min, max, avg] in kilobytes.
+     *
+     * We are only concerned about integers, booleans and strings as those are the
+     * only datatypes Caphpe currently supports.
+     *
+     * @since 0.1.0
+     * @access protected
+     *
+     * @return int[]
+     */
+    protected function getItemSizes()
+    {
+        $smallest = null;
+        $largest = null;
+        $sum = 0;
+        $itemCount = $this->getItemCount();
+
+        // No items, return early.
+        if ($itemCount === 0) {
+            return [
+                'minimum' => 0,
+                'maximum' => 0,
+                'average' => 0
+            ];
+        }
+
+        array_walk($this->items, function ($item) use (&$smallest, &$largest, &$sum) {
+            if (is_int($item)) {
+                $size = $this->getIntegerSizeBytes($item);
+            } elseif (is_bool($item)) {
+                $size = $this->getBooleanSizeBytes($item);
+            } else {
+                $size = $this->getStringSizeBytes($item);
+            }
+
+            if ($smallest === null || $smallest > $size) {
+                $smallest = $size;
+            }
+
+            if ($largest === null || $largest < $size) {
+                $largest = $size;
+            }
+
+            $sum += $size;
+        });
+
+        $avgSize = $sum / $itemCount;
+
+        // Return KBytes.
+        return [
+            'minimum' => $smallest / 1024,
+            'maximum' => $largest / 1024,
+            'average' => $avgSize / 1024
+        ];
+    }
+
+    /**
+     * Calculate an integer value's byte memory size.
+     *
+     * @since 0.1.0
+     * @access protected
+     *
+     * @param int $value Value to get size of.
+     *
+     * @return int
+     */
+    protected function getIntegerSizeBytes($value)
+    {
+        return $this->getDefaultValueSizeBytes();
+    }
+
+    /**
+     * Calculate a string value's byte memory size.
+     *
+     * `strlen` calculates byte size, `mb_strlen` calculates char length. Some
+     * systems might have a config that casts `strlen`->`mb_strlen`, need to validate
+     * some better way if needed.
+     *
+     * @since 0.1.0
+     * @access protected
+     *
+     * @param string $value String to get byte value for.
+     *
+     * @return int
+     */
+    protected function getStringSizeBytes($value)
+    {
+        $size = PHP_INT_SIZE + strlen($value);
+
+        // Return either str size, or the minimum default.
+        return $size < $this->getDefaultValueSizeBytes()
+            ? $this->getDefaultValueSizeBytes()
+            : $size;
+    }
+
+    /**
+     * Get a boolean value's byte memory size.
+     *
+     * @since 0.1.0
+     * @access protected
+     *
+     * @param bool $value Boolean value to calculate.
+     *
+     * @return int
+     */
+    protected function getBooleanSizeBytes($value)
+    {
+        return $this->getDefaultValueSizeBytes();
+    }
+
+    /**
+     * PHP adds overhead to value memory footprints. This function returns the
+     * "default minimum" value byte size which PHP allocates.
+     *
+     * @since 0.1.0
+     * @link https://nikic.github.io/2011/12/12/How-big-are-PHP-arrays-really-Hint-BIG.html
+     * @access protected
+     * @return int
+     */
+    protected function getDefaultValueSizeBytes()
+    {
+        // 32 bit = 72 bytes, 64 bit = 144 bytes.
+        return PHP_INT_SIZE === 4 ? 72 : 144;
+    }
+
+    /**
      * Check whether an item is stale and should be removed.
+     *
+     * @since 0.1.0
+     * @access protected
      *
      * @param string $key Key to check with.
      *

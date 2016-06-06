@@ -112,7 +112,8 @@ class Application
             'decrement ',
             'get ',
             'has ',
-            'flush'
+            'flush',
+            'status'
         ];
 
         foreach ($available as $cmd) {
@@ -145,7 +146,8 @@ class Application
             'replace'   => '%^[^ ]+ +((s|b|i)\|)?.+( +[0-9]+)?$%sui', // <key> <type>?<value> <timeout>?
             'increment' => '%^[^ ]+( +[0-9]+)?$%sui', // <key> <timeout>?
             'decrement' => '%^[^ ]+( +[0-9]+)?$%sui', // <key> <timeout>?
-            'flush'     => '%^$%sui' // none
+            'flush'     => '%^$%sui', // none
+            'status'    => '%^$%sui' // none
         ];
 
         return (bool) preg_match($map[$command] . 'imu', $arguments);
@@ -167,6 +169,9 @@ class Application
 
         if ($request === 'flush') {
             $command = 'flush';
+            $args = '';
+        } elseif ($request === 'status') {
+            $command = 'status';
             $args = '';
         } else {
             $command = strtolower(mb_substr($request, 0, stripos($request, ' ')));
@@ -488,6 +493,13 @@ class Application
         $this->stdout('Flushing with ' . $args, 3);
 
         return $this->getPool()->flush();
+    }
+
+    protected function commandStatus($args)
+    {
+        $this->stdout('Fetching status with ' . $args, 3);
+
+        return $this->getPool()->getStatus();
     }
 
     /**

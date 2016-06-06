@@ -257,6 +257,18 @@ Flushes **all data** from a Caphpe instance. Returns `1` if successful, `<empty
 string>` if not. Examples:
 
     flush
+    
+##### status
+
+    status
+
+Gets a simple status message from a Caphpe instance. First line of the output
+contains headers (separated with `\t`) and the second line contains the values that
+correspond with the headers (also separated with `\t`). Examples:
+
+    status
+    > Memory usage (MB) \t Item count \t Smallest item (KB) \t Largest item (KB) \t Average item (KB)
+    > 34.5 \t 44583 \t 144 \t 256 \t 157
 
 ##### close
 
