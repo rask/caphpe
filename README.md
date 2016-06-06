@@ -5,6 +5,8 @@ key-value storage written in PHP.
 
 Originally the idea was to create a Memcached clone using just PHP as an experiment.
 
+You can read the "manual" over at [rask.github.io/caphpe](https://rask.github.io/caphpe).
+
 ## Installation
 
 ### Requirements
@@ -14,6 +16,8 @@ Originally the idea was to create a Memcached clone using just PHP as an experim
 Make sure you have a relatively new PHP CLI installation available. Caphpe has been
 developed with PHP5.5+ in mind but is currently only tested on PHP 7. Please try it
 out and report if something does not work.
+
+(Later on Caphpe will move to support only PHP7+ environments.)
 
 ### Using the built PHAR
 
@@ -27,6 +31,17 @@ out and report if something does not work.
 2.  Make sure `bin/caphpe` is executable
 3.  Install dependencies using `composer install`
 4.  Run `bin/caphpe`.
+
+### Build PHAR for yourself
+
+First clone this repo and fetch Composer dependencies, then run
+
+    $ box build
+    
+If you want to build a specific version, you can checkout a tag:
+
+    $ git checkout 0.1.0
+    $ box build
 
 ## Usage
 
