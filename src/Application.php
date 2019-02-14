@@ -1,9 +1,9 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Caphpe;
 
 use Caphpe\Cache\Pool;
+use Caphpe\Cli\Arguments;
 
 /**
  * Class Application
@@ -18,7 +18,7 @@ class Application
      *
      * @since 0.1.0
      * @access protected
-     * @var \Caphpe\Cli\Arguments
+     * @var Arguments
      */
     public $configuration;
 
@@ -27,7 +27,7 @@ class Application
      *
      * @since 0.1.0
      * @access protected
-     * @var \Caphpe\Cache\Pool[]
+     * @var Pool[]
      */
     protected $pools = [];
 
@@ -37,9 +37,12 @@ class Application
      * Create default cache pool.
      *
      * @since 0.1.0
+     *
+     * @param Arguments $arguments Application startup args.
+     *
      * @return void
      */
-    public function __construct(Cli\Arguments $arguments)
+    public function __construct(Arguments $arguments)
     {
         $this->configuration = $arguments;
         $this->pools['default'] = new Pool();
@@ -63,9 +66,9 @@ class Application
      *
      * @param string $key Pool key.
      *
-     * @return \Caphpe\Cache\Pool
+     * @return Pool
      */
-    protected function getPool($key = 'default') : Pool
+    protected function getPool(string $key = 'default') : Pool
     {
         return $this->pools[$key];
     }
@@ -77,7 +80,7 @@ class Application
      *
      * @param string $request The request data.
      *
-     * @return string
+     * @return mixed
      */
     public function handleRequest(string $request)
     {
@@ -162,7 +165,7 @@ class Application
      *
      * @param string $request Request command to execute.
      *
-     * @return bool
+     * @return mixed
      */
     protected function doCommand(string $request)
     {
@@ -175,8 +178,11 @@ class Application
             $command = 'status';
             $args = '';
         } else {
-            $command = strtolower(mb_substr($request, 0, stripos($request, ' ')));
-            $args = trim(mb_substr($request, stripos($request, ' ')));
+            $req_space_pos = stripos($request, ' ');
+            $req_space_pos = $req_space_pos === false ? 0 : $req_space_pos;
+
+            $command = strtolower(mb_substr($request, 0, $req_space_pos));
+            $args = trim(mb_substr($request, $req_space_pos));
         }
 
         $validArgs = $this->validateArguments($command, $args);
@@ -262,7 +268,7 @@ class Application
         $arguments = [];
 
         preg_match(
-        //'%^([^\s]+)\s+((s|b|i)\|)?(.+)(\s+([0-9]+))?$%',
+            //'%^([^\s]+)\s+((s|b|i)\|)?(.+)(\s+([0-9]+))?$%',
             '%^(?<key>[^ ]+) ((?<type>b|s|i)\|)?(?<value>.*?)( +(?<timeout>[0-9]+))?$%isu',
             $args,
             $arguments
@@ -551,7 +557,7 @@ class Application
 
         $cleared = $this->getPool()->clearStaleCache();
 
-        if ($cleared) {
+        if ($cleared > 0) {
             $this->stdout('Cleared ' . $cleared . ' stale cache values');
         }
     }
@@ -601,9 +607,11 @@ class Application
     /**
      * Cast a value for internal cache saving.
      *
+     * ```
      * s -> string
      * b -> boolean
      * i -> integer
+     * ```
      *
      * Defaults to string.
      *

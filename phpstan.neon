@@ -1,0 +1,9 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+parameters:
+    paths:
+        -   .
+    excludes_analyse:
+        -   %rootDir%/../../../vendor/*
+        -   %rootDir%/../../../tests/*
+    level: max

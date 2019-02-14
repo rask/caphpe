@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Caphpe\Tests\Cache;
 
@@ -16,7 +15,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_adds()
+    public function test_it_adds()
     {
         $pool = new Pool();
 
@@ -32,7 +31,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_sets()
+    public function test_it_sets()
     {
         $pool = new Pool();
 
@@ -47,7 +46,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_replaces()
+    public function test_it_replaces()
     {
         $pool = new Pool();
 
@@ -62,7 +61,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_deletes()
+    public function test_it_deletes()
     {
         $pool = new Pool();
 
@@ -75,7 +74,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_increments_and_decrements()
+    public function test_it_increments_and_decrements()
     {
         $pool = new Pool();
 
@@ -98,7 +97,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_has()
+    public function test_it_has()
     {
         $pool = new Pool();
 
@@ -111,7 +110,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_flushes()
+    public function test_it_flushes()
     {
         $pool = new Pool();
 
@@ -136,7 +135,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_clears_lru()
+    public function test_it_clears_lru()
     {
         $pool = new Pool();
 
@@ -179,7 +178,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_clears_stale_cache()
+    public function test_it_clears_stale_cache()
     {
         $pool = new Pool();
 
@@ -207,7 +206,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_calculates_timeouts()
+    public function test_it_calculates_timeouts()
     {
         $pool = new Pool();
 
@@ -226,7 +225,7 @@ class PoolTest extends TestCase
     /**
      *
      */
-    function test_it_parses_keys_and_values()
+    public function test_it_parses_keys_and_values()
     {
         $pool = new Pool();
 

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Caphpe\Tests;
 
@@ -17,7 +16,7 @@ class ApplicationTest extends TestCase
     /**
      *
      */
-    function test_it_can_be_instantiated ()
+    public function test_it_can_be_instantiated()
     {
         $app = new Application(new Arguments([]));
 

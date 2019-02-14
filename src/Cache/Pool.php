@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Caphpe\Cache;
 
@@ -306,7 +305,7 @@ class Pool
      * @since 0.1.0
      * @access protected
      *
-     * @return int[]
+     * @return array
      */
     protected function getItemSizes() : array
     {
@@ -348,9 +347,9 @@ class Pool
 
         // Return KBytes.
         return [
-            'minimum' => $smallest / 1024,
-            'maximum' => $largest / 1024,
-            'average' => $avgSize / 1024
+            'minimum' => $smallest ?? 0 / 1024,
+            'maximum' => $largest ?? 0 / 1024,
+            'average' => $avgSize ?? 0 / 1024
         ];
     }
 
@@ -469,7 +468,7 @@ class Pool
      */
     public function parseKey(string $key) : string
     {
-        $key = preg_replace('%[^a-zA-Z0-9\_\.]%', '', $key);
+        $key = preg_replace('%[^a-zA-Z0-9\_\.]%', '', $key) ?? '';
 
         return mb_substr($key, 0, 64);
     }
@@ -483,7 +482,7 @@ class Pool
      * @since 0.1.0
      * @access protected
      *
-     * @param mixed $value Value to prepare
+     * @param mixed $value Value to prepare.
      *
      * @return mixed
      */
@@ -514,13 +513,13 @@ class Pool
      *
      * @since 0.1.0
      *
-     * @param float $portion from 0.0 to 1.0 value how much to clear.
+     * @param float $portion From 0.0 to 1.0 value how much to clear.
      *
      * @return bool
      */
     public function clearLeastRecentlyUsed(float $portion = 0.25) : bool
     {
-        if ($portion >= 1.0 || empty($this->items) || empty($this->timeouts)) {
+        if ($portion >= 1.0 || count($this->items) < 1 || count($this->timeouts) < 1) {
             $this->flush();
         }
 
@@ -571,12 +570,12 @@ class Pool
      *
      * @return int
      */
-    public function calculateTimeout($timeout) : int
+    public function calculateTimeout(int $timeout) : int
     {
-        if ((int) $timeout <= 0) {
+        if ($timeout <= 0) {
             return 0;
         }
 
-        return time() + (int) $timeout;
+        return time() + $timeout;
     }
 }
