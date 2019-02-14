@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Caphpe\Cache;
 
@@ -50,7 +51,7 @@ class Pool
      *
      * @return bool
      */
-    public function add($key, $value, $timeout = 0)
+    public function add(string $key, $value, int $timeout = 0) : bool
     {
         $key = $this->parseKey($key);
         $value = $this->prepareValue($value);
@@ -77,7 +78,7 @@ class Pool
      *
      * @return bool
      */
-    public function set($key, $value, $timeout = 0)
+    public function set(string $key, $value, int $timeout = 0) : bool
     {
         $key = $this->parseKey($key);
         $value = $this->prepareValue($value);
@@ -100,7 +101,7 @@ class Pool
      *
      * @return bool
      */
-    public function replace($key, $value, $timeout = 0)
+    public function replace(string $key, $value, int $timeout = 0) : bool
     {
         $key = $this->parseKey($key);
         $value = $this->prepareValue($value);
@@ -125,7 +126,7 @@ class Pool
      *
      * @return bool
      */
-    public function delete($key)
+    public function delete(string $key) : bool
     {
         $key = $this->parseKey($key);
 
@@ -146,7 +147,7 @@ class Pool
      *
      * @return bool
      */
-    public function increment($key, $timeout = 0)
+    public function increment(string $key, int $timeout = 0) : bool
     {
         $key = $this->parseKey($key);
 
@@ -171,7 +172,7 @@ class Pool
      *
      * @return bool
      */
-    public function decrement($key, $timeout = 0)
+    public function decrement(string $key, int $timeout = 0) : bool
     {
         $key = $this->parseKey($key);
 
@@ -195,7 +196,7 @@ class Pool
      *
      * @return mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
         $key = $this->parseKey($key);
 
@@ -221,7 +222,7 @@ class Pool
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key) : bool
     {
         $key = $this->parseKey($key);
 
@@ -240,7 +241,7 @@ class Pool
      * @since 0.1.0
      * @return bool
      */
-    public function flush()
+    public function flush() : bool
     {
         $this->items = [];
         $this->lastUse = [];
@@ -255,7 +256,7 @@ class Pool
      * @since 0.1.0
      * @return string
      */
-    public function getStatus()
+    public function getStatus() : string
     {
         $memoryUsageMBytes = memory_get_usage() / 1024 / 1024;
         $itemCount = $this->getItemCount();
@@ -289,7 +290,7 @@ class Pool
      * @access protected
      * @return int
      */
-    protected function getItemCount()
+    protected function getItemCount() : int
     {
         return count($this->items);
     }
@@ -307,7 +308,7 @@ class Pool
      *
      * @return int[]
      */
-    protected function getItemSizes()
+    protected function getItemSizes() : array
     {
         $smallest = null;
         $largest = null;
@@ -325,9 +326,9 @@ class Pool
 
         array_walk($this->items, function ($item) use (&$smallest, &$largest, &$sum) {
             if (is_int($item)) {
-                $size = $this->getIntegerSizeBytes($item);
+                $size = $this->getIntegerSizeBytes();
             } elseif (is_bool($item)) {
-                $size = $this->getBooleanSizeBytes($item);
+                $size = $this->getBooleanSizeBytes();
             } else {
                 $size = $this->getStringSizeBytes($item);
             }
@@ -359,11 +360,9 @@ class Pool
      * @since 0.1.0
      * @access protected
      *
-     * @param int $value Value to get size of.
-     *
      * @return int
      */
-    protected function getIntegerSizeBytes($value)
+    protected function getIntegerSizeBytes() : int
     {
         return $this->getDefaultValueSizeBytes();
     }
@@ -382,7 +381,7 @@ class Pool
      *
      * @return int
      */
-    protected function getStringSizeBytes($value)
+    protected function getStringSizeBytes(string $value) : int
     {
         $size = PHP_INT_SIZE + strlen($value);
 
@@ -398,11 +397,9 @@ class Pool
      * @since 0.1.0
      * @access protected
      *
-     * @param bool $value Boolean value to calculate.
-     *
      * @return int
      */
-    protected function getBooleanSizeBytes($value)
+    protected function getBooleanSizeBytes() : int
     {
         return $this->getDefaultValueSizeBytes();
     }
@@ -416,7 +413,7 @@ class Pool
      * @access protected
      * @return int
      */
-    protected function getDefaultValueSizeBytes()
+    protected function getDefaultValueSizeBytes() : int
     {
         // 32 bit = 72 bytes, 64 bit = 144 bytes.
         return PHP_INT_SIZE === 4 ? 72 : 144;
@@ -432,7 +429,7 @@ class Pool
      *
      * @return bool
      */
-    protected function itemIsStale($key)
+    protected function itemIsStale(string $key) : bool
     {
         if (!array_key_exists($key, $this->timeouts)) {
             return false;
@@ -470,7 +467,7 @@ class Pool
      *
      * @return string
      */
-    public function parseKey($key)
+    public function parseKey(string $key) : string
     {
         $key = preg_replace('%[^a-zA-Z0-9\_\.]%', '', $key);
 
@@ -505,9 +502,9 @@ class Pool
      * Return the amount of distinctive items in the cache pool.
      *
      * @since 0.1.0
-     * @return integer
+     * @return int
      */
-    public function itemCount()
+    public function itemCount() : int
     {
         return count($this->items);
     }
@@ -521,7 +518,7 @@ class Pool
      *
      * @return bool
      */
-    public function clearLeastRecentlyUsed($portion = 0.25)
+    public function clearLeastRecentlyUsed(float $portion = 0.25) : bool
     {
         if ($portion >= 1.0 || empty($this->items) || empty($this->timeouts)) {
             $this->flush();
@@ -548,9 +545,9 @@ class Pool
      * Clear cache that has stale timeout value.
      *
      * @since 0.1.0
-     * @return integer
+     * @return int
      */
-    public function clearStaleCache()
+    public function clearStaleCache() : int
     {
         $deleted = 0;
 
@@ -572,14 +569,14 @@ class Pool
      *
      * @param integer $timeout Amount of seconds to future to set timeout to.
      *
-     * @return integer
+     * @return int
      */
-    public function calculateTimeout($timeout)
+    public function calculateTimeout($timeout) : int
     {
         if ((int) $timeout <= 0) {
             return 0;
         }
 
-        return (int) time() + (int) $timeout;
+        return time() + (int) $timeout;
     }
 }

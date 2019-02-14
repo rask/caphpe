@@ -1,13 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace Caphpe\Tests;
 
 use Caphpe\Application;
 use Caphpe\Cli\Arguments;
+use PHPUnit\Framework\TestCase;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class ApplicationTest
+ *
+ * @package Caphpe\Tests
+ */
+class ApplicationTest extends TestCase
 {
-    function testItCanBeInstantiated ()
+    /**
+     *
+     */
+    function test_it_can_be_instantiated ()
     {
         $app = new Application(new Arguments([]));
 

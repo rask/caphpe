@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Caphpe;
 
@@ -44,7 +45,7 @@ class Application
         $this->pools['default'] = new Pool();
 
         $startupMsg = vsprintf(
-            'Started new Caphpe (version @package_version@) instance on %s:%s',
+            'Starting new Caphpe (version @package_version@) instance on %s:%s',
             [
                 $this->configuration->getOption('host'),
                 $this->configuration->getOption('port')
@@ -64,7 +65,7 @@ class Application
      *
      * @return \Caphpe\Cache\Pool
      */
-    protected function getPool($key = 'default')
+    protected function getPool($key = 'default') : Pool
     {
         return $this->pools[$key];
     }
@@ -78,7 +79,7 @@ class Application
      *
      * @return string
      */
-    public function handleRequest($request)
+    public function handleRequest(string $request)
     {
         $this->stdout('Doing request: ' . $request, 3);
 
@@ -101,7 +102,7 @@ class Application
      *
      * @return bool
      */
-    protected function validateCommand($request)
+    protected function validateCommand(string $request) : bool
     {
         $available = [
             'add ',
@@ -133,7 +134,7 @@ class Application
      *
      * @return bool
      */
-    protected function validateArguments($command, $arguments)
+    protected function validateArguments(string $command, string $arguments) : bool
     {
         $arguments = trim($arguments);
 
@@ -163,7 +164,7 @@ class Application
      *
      * @return bool
      */
-    protected function doCommand($request)
+    protected function doCommand(string $request)
     {
         $request = trim($request);
 
@@ -186,9 +187,7 @@ class Application
 
         $method = 'command' . ucfirst($command);
 
-        $result = $this->$method(trim($args));
-
-        return $result;
+        return $this->$method(trim($args));
     }
 
     /**
@@ -212,7 +211,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandAdd($args)
+    protected function commandAdd(string $args)
     {
         $this->stdout('Adding with ' . $args, 3);
 
@@ -256,7 +255,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandSet($args)
+    protected function commandSet(string $args)
     {
         $this->stdout('Setting with ' . $args, 3);
 
@@ -300,14 +299,13 @@ class Application
      *
      * @return mixed
      */
-    protected function commandReplace($args)
+    protected function commandReplace(string $args)
     {
         $this->stdout('Replacing with ' . $args, 3);
 
         $arguments = [];
 
         preg_match(
-        //'%^([^\s]+)\s+((s|b|i)\|)?(.+)(\s+([0-9]+))?$%',
             '%^(?<key>[^ ]+) ((?<type>b|s|i)\|)?(?<value>.*?)( +(?<timeout>[0-9]+))?$%isu',
             $args,
             $arguments
@@ -341,7 +339,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandDelete($args)
+    protected function commandDelete(string $args)
     {
         $this->stdout('Deleting with ' . $args, 3);
 
@@ -369,7 +367,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandIncrement($args)
+    protected function commandIncrement(string $args)
     {
         $this->stdout('Incrementing with ' . $args, 3);
 
@@ -402,7 +400,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandDecrement($args)
+    protected function commandDecrement(string $args)
     {
         $this->stdout('Decrementing with ' . $args, 2);
 
@@ -434,7 +432,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandGet($args)
+    protected function commandGet(string $args)
     {
         $this->stdout('Getting with ' . $args, 3);
 
@@ -461,7 +459,7 @@ class Application
      *
      * @return mixed
      */
-    protected function commandHas($args)
+    protected function commandHas(string $args)
     {
         $this->stdout('Checking (has) with ' . $args, 3);
 
@@ -488,14 +486,32 @@ class Application
      *
      * @return mixed
      */
-    protected function commandFlush($args)
+    protected function commandFlush(string $args)
     {
         $this->stdout('Flushing with ' . $args, 3);
 
         return $this->getPool()->flush();
     }
 
-    protected function commandStatus($args)
+    /**
+     * Print a status message.
+     *
+     * Format as:
+     *
+     *     status
+     *
+     * Example:
+     *
+     *     status
+     *
+     * @since 0.1.0
+     * @access protected
+     *
+     * @param string $args Args the command was called with.
+     *
+     * @return string
+     */
+    protected function commandStatus(string $args) : string
     {
         $this->stdout('Fetching status with ' . $args, 3);
 
@@ -508,7 +524,7 @@ class Application
      * @since 0.1.0
      * @return void
      */
-    public function tickEvent()
+    public function tickEvent() : void
     {
         $memUsage = memory_get_usage();
         $memLimit = $this->configuration->getOption('memorylimit');
@@ -552,9 +568,9 @@ class Application
      *
      * @return void
      */
-    protected function stdout($message, $verbosity = 1)
+    protected function stdout(string $message, int $verbosity = 1) : void
     {
-        if ((int) $verbosity > (int) $this->configuration->getOption('verbosity')) {
+        if ($verbosity > (int) $this->configuration->getOption('verbosity')) {
             return;
         }
 
@@ -573,9 +589,9 @@ class Application
      *
      * @return void
      */
-    protected function stderr($message, $verbosity = 1)
+    protected function stderr(string $message, int $verbosity = 1) : void
     {
-        if ((int) $verbosity > (int) $this->configuration->getOption('verbosity')) {
+        if ($verbosity > (int) $this->configuration->getOption('verbosity')) {
             return;
         }
 
@@ -599,7 +615,7 @@ class Application
      *
      * @return integer|boolean|string
      */
-    protected function castValue($value, $type = 's')
+    protected function castValue($value, string $type = 's')
     {
         try {
             switch ($type) {

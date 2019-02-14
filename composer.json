@@ -7,21 +7,28 @@
             "email": "ojrask@gmail.com"
         }
     ],
+
     "autoload": {
         "psr-4": {
             "Caphpe\\": "src/"
         }
     },
+
     "autoload-dev": {
         "psr-4": {
             "Caphpe\\Tests\\": "tests/"
         }
     },
+
     "require": {
+        "php": ">=7.2",
         "ext-sockets": "*",
+        "ext-mbstring": "*",
         "react/react": "^0.4.2"
     },
+
     "require-dev": {
-        "phpunit/phpunit": "^5.2"
+        "roave/security-advisories": "dev-master",
+        "phpunit/phpunit": "8.*"
     }
 }

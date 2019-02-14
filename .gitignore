@@ -5,3 +5,4 @@ tests/coverage/
 caphpe.phar
 index.html
 style.css
+.phpunit.result.cache

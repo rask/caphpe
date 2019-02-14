@@ -1,12 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Caphpe\Tests\Cache;
 
 use Caphpe\Cache\Pool;
+use PHPUnit\Framework\TestCase;
 
-class PoolTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class PoolTest
+ *
+ * @package Caphpe\Tests\Cache
+ */
+class PoolTest extends TestCase
 {
-    function testItAdds()
+    /**
+     *
+     */
+    function test_it_adds()
     {
         $pool = new Pool();
 
@@ -19,7 +29,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($pool->get('test2_key'), 'test2_value');
     }
 
-    function testItSets()
+    /**
+     *
+     */
+    function test_it_sets()
     {
         $pool = new Pool();
 
@@ -31,7 +44,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($pool->get('another_key'), 'test value');
     }
 
-    function testItReplaces()
+    /**
+     *
+     */
+    function test_it_replaces()
     {
         $pool = new Pool();
 
@@ -43,7 +59,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($pool->get('exist_key'), 'repl value');
     }
 
-    function testItDeletes()
+    /**
+     *
+     */
+    function test_it_deletes()
     {
         $pool = new Pool();
 
@@ -53,7 +72,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($pool->get('to_delete'));
     }
 
-    function testItIncrementsAndDecrements()
+    /**
+     *
+     */
+    function test_it_increments_and_decrements()
     {
         $pool = new Pool();
 
@@ -73,7 +95,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($pool->get('non_decr'), 'imma string this down');
     }
 
-    function testItHas()
+    /**
+     *
+     */
+    function test_it_has()
     {
         $pool = new Pool();
 
@@ -83,7 +108,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($pool->has('otherkey'));
     }
 
-    function testItFlushes()
+    /**
+     *
+     */
+    function test_it_flushes()
     {
         $pool = new Pool();
 
@@ -105,7 +133,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($pool->get('key4'));
     }
 
-    function testItClearsLru()
+    /**
+     *
+     */
+    function test_it_clears_lru()
     {
         $pool = new Pool();
 
@@ -145,7 +176,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($pool->has('key12'));
     }
 
-    function testItClearsStaleCache()
+    /**
+     *
+     */
+    function test_it_clears_stale_cache()
     {
         $pool = new Pool();
 
@@ -170,7 +204,10 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($pool->has('key6'));
     }
 
-    function testItCalculatesTimeouts()
+    /**
+     *
+     */
+    function test_it_calculates_timeouts()
     {
         $pool = new Pool();
 
@@ -186,11 +223,14 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($pool->calculateTimeout(0), 0);
     }
 
-    function testItParsesKeysAndValues()
+    /**
+     *
+     */
+    function test_it_parses_keys_and_values()
     {
         $pool = new Pool();
 
-        $srcLong = str_repeat(time(), 24);
+        $srcLong = str_repeat((string) time(), 24);
 
         $key = $pool->parseKey($srcLong);
 
