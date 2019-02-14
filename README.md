@@ -11,13 +11,9 @@ You can read the "manual" over at [rask.github.io/caphpe](https://rask.github.io
 
 ### Requirements
 
--   PHP CLI with sockets enabled
+-   PHP 7.2+ CLI with the following extensions: `mbstring`, `sockets`
 
-Make sure you have a relatively new PHP CLI installation available. Caphpe has been
-developed with PHP5.5+ in mind but is currently only tested on PHP 7. Please try it
-out and report if something does not work.
-
-(Later on Caphpe will move to support only PHP7+ environments.)
+Version 0.1.0 supports PHP 5.5 and newer, but is stale.
 
 ### Using the built PHAR
 
@@ -37,10 +33,10 @@ out and report if something does not work.
 First clone this repo and fetch Composer dependencies, then run
 
     $ box build
-    
+
 If you want to build a specific version, you can checkout a tag:
 
-    $ git checkout 0.1.0
+    $ git checkout 0.2.0
     $ box build
 
 ## Usage
@@ -59,23 +55,23 @@ Where `[options]` may contain any of the following:
 
     --host=<host>|-h <host>
         IP or hostname to listen on
-    
+
     --port=<port>|-p <port>
         Port to listen on
-        
+
     --verbosity=<verbosity>|-v <verbosity>
         How verbose the instance output to STDOUT and STDERR is, use either 1, 2 or 3
-        
+
     --memorylimit=<limit>|-m <limit>
         Limit the amount of memory (in megabytes) Caphpe uses for itself
 
 Defaults are as follows:
-    
+
     --host=127.0.0.1
     --port=10808
     --verbosity=1
     --memorylimit=64
-    
+
 Caphpe will start and stay in the foreground unless otherwise sent to background. It
 will output STDOUT and STDERR messages depending on the verbosity parameter.
 
@@ -97,7 +93,7 @@ Caphpe reads commands that end in newlines.
 Format your requests to the interface as such:
 
     <command> <parameters>\n
-    
+
 In commands the `<key>` parameter is always the first one, and the numerical
 `<timeout>` parameter is always the last one (though optional). See what commands are
 available later in this README.
@@ -112,11 +108,11 @@ You can try Caphpe with telnet (tested with Windows 7 telnet):
     > get mykey
     value
     > has nokey
-    
+
     > flush
     1
     > has mykey
-    
+
     > close
     telnet>
 
@@ -195,7 +191,7 @@ successful, `<empty string>` if not. Examples:
 
 Set a cache value. Will override values if the key exists. Returns `1` if successful,
 `<empty string>` if not. Examples:
-                        
+
     set mykey somevalue
     set mykey s|this is a string value
     set mykey b|1 3600
@@ -208,7 +204,7 @@ Set a cache value. Will override values if the key exists. Returns `1` if succes
 
 Replace a cache value. If the key does not exist the nothing is done. Returns `1` if
 successful, `<empty string>` if not. Examples:
-                                    
+
     replace mykey somevalue
     replace mykey s|this is a string value
     replace mykey b|1 3600
@@ -272,7 +268,7 @@ Flushes **all data** from a Caphpe instance. Returns `1` if successful, `<empty
 string>` if not. Examples:
 
     flush
-    
+
 ##### status
 
     status
@@ -288,7 +284,7 @@ correspond with the headers (also separated with `\t`). Examples:
 ##### close
 
     close
-    
+
 Close an open socket connection to Caphpe if using through telnet for instance.
 Examples:
 
@@ -300,14 +296,14 @@ Caphpe works where PHP CLI works. This means you can download the PHAR and just 
 it without the need to compile software in environments where compilers may not even
 be available.
 
-Of course it is not as performant as something like Redis or Memcached, but it can 
+Of course it is not as performant as something like Redis or Memcached, but it can
 provide a simple cache backend for lighter use cases.
 
 ## Warning
 
 Caphpe is not yet production ready as-is. Feel free to try it out though.
 
-Caphpe does not persist the cached data anywhere. If the Caphpe instance is killed 
+Caphpe does not persist the cached data anywhere. If the Caphpe instance is killed
 all stored data is gone too.
 
 ## TODO

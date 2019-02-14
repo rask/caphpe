@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Caphpe\Cli;
 
@@ -81,7 +82,7 @@ class Arguments
      *
      * @return mixed
      */
-    public function getOption($key)
+    public function getOption(string $key)
     {
         $parsed = array_key_exists($key, $this->givenOptions);
 
@@ -133,7 +134,7 @@ class Arguments
      *
      * @return mixed
      */
-    protected function getDefaultOption($key)
+    protected function getDefaultOption(string $key)
     {
         return $this->defaults[$key];
     }
